@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Student List";
+    Layout = "~/Views/Shared/MyLayoutHelper.cshtml";
+}
+
+@model IEnumerable<Student>
+
+<a asp-action="Create" class="btn btn-primary">Create Student</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Mã số</th>
+            <th>Ảnh</th>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Ngành</th>
+            <th>Giới tính</th>
+            <th>Hệ ĐT</th>
+            <th>Địa chỉ</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Id</td>
+                <td>
+                    @if (s.ProfilePicture != null && s.ProfilePicture.Length > 0)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(s.ProfilePicture)" alt="Profile Picture" width="100" height="100" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
+                <td>@s.Name</td>
+                <td>@s.DateOfBirth.ToString("dd/MM/yyyy")</td>
+
+                @{
+                    string branchName = s.Branch switch
+                    {
+                        Branch.IT => "CNTT",
+                        Branch.BE => "Kinh tế",
+                        Branch.CE => "Công trình",
+                        Branch.EE => "Điện - Điện tử",
+                        _ => "Không xác định"
+                    };
+                }
+                <td>@branchName</td>
+                <td>@(s.Gender == Gender.Male ? "Nam" : "Nữ")</td>
+                <td>@(s.IsRegular ? "Chính quy" : "Phi chính quy")</td>
+                <td>@s.Address</td>
+                <td>@s.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelector("table").onclick = function () {
+            this.style.backgroundColor = 'yellow';
+        }
+    </script>
+}
